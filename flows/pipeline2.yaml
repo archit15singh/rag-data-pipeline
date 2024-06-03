@@ -1,9 +1,7 @@
 flow_name: HTML to Markdown Pipeline
 parameters:
   - name: html_path
-    default: /path/to/your/file.html
   - name: markdown_output_path
-    default: /path/to/output/file.md
 tasks:
   - name: read_html
     params:
@@ -11,8 +9,10 @@ tasks:
   - name: convert_html_to_markdown
     params:
       html_content: read_html
-      parallel: true  # Run this task in parallel
+    depends_on: read_html  # Ensure convert_html_to_markdown runs after read_html
+    parallel: true  # This task can run in parallel with other independent tasks
   - name: write_file
     params:
       content: convert_html_to_markdown
       output_path: markdown_output_path
+    depends_on: convert_html_to_markdown  # Ensure write_file runs after convert_html_to_markdown
