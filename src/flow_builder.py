@@ -26,16 +26,10 @@ def create_flow_from_yaml(yaml_file):
             
             for param_key, param_value in task_config['params'].items():
                 if param_value in results:
-                    task_params[param_key] = results[param_value]
+                    # Ensure the result is passed as a positional argument
+                    dependencies.append(results[param_value])
                 else:
                     task_params[param_key] = kwargs.get(param_value, param_value)
-
-            if 'depends_on' in task_config:
-                depends_on = task_config['depends_on']
-                if isinstance(depends_on, list):
-                    dependencies = [results[dep] for dep in depends_on]
-                else:
-                    dependencies = [results[depends_on]]
 
             logger.info(f"Running task: {task_name} with params: {task_params} and dependencies: {dependencies}")
 
@@ -43,13 +37,13 @@ def create_flow_from_yaml(yaml_file):
                 try:
                     results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
                 except Exception as e:
-                    logger.error(f"Task {task_name} failed")
+                    logger.error(f"Task {task_name} failed: {str(e)}")
                     raise
             else:
                 try:
                     results[task_name] = tasks[task_name](*dependencies, **task_params)
                 except Exception as e:
-                    logger.error(f"Task {task_name} failed")
+                    logger.error(f"Task {task_name} failed: {str(e)}")
                     raise
 
         return results
