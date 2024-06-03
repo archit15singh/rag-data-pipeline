@@ -1,4 +1,4 @@
 prefect
-boto3
 PyYAML
 markdownify
+textract
