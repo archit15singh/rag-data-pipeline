@@ -31,7 +31,7 @@ def create_flow_from_yaml(yaml_file):
                 else:
                     task_params[param_key] = kwargs.get(param_value, param_value)
 
-            logger.info(f"Running task: {task_name} with params: {task_params} and dependencies: {dependencies}")
+            logger.info(f"Running task: {task_name} with params: {task_params} and dependencies: {len(dependencies)}")
 
             if task_config.get('parallel', False):
                 try:
