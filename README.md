@@ -1,6 +1,6 @@
 # RAG Data Pipeline
 
-The project is designed to process and transform various types of documents, including PDFs and HTML files, into different formats such as JSON and Markdown. This pipeline uses Prefect for orchestration.
+process and transform various types of documents, including PDFs and HTML files, into different formats such as JSON and Markdown. This pipeline uses Prefect for orchestration.
 
 ## Pipelines
 - **PDF to JSON Conversion:** Reads PDFs, chunks the text, and writes it to a JSON file.
