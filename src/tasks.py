@@ -6,7 +6,7 @@ import textract
 import requests
 from markdownify import markdownify as md
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def read_pdf(file_path: str):
     logger = get_run_logger()
     try:
@@ -17,7 +17,7 @@ def read_pdf(file_path: str):
         logger.error(f"Failed to read PDF from {file_path}: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def chunk_text(text: str, chunk_size: int = 100):
     logger = get_run_logger()
     try:
@@ -28,7 +28,7 @@ def chunk_text(text: str, chunk_size: int = 100):
         logger.error(f"Failed to chunk text: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def write_json(data, output_path: str):
     logger = get_run_logger()
     try:
@@ -39,7 +39,7 @@ def write_json(data, output_path: str):
         logger.error(f"Failed to write JSON to {output_path}: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def read_html(file_path: str):
     logger = get_run_logger()
     try:
@@ -51,7 +51,7 @@ def read_html(file_path: str):
         logger.error(f"Failed to read HTML from {file_path}: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def convert_html_to_markdown(html_content: str):
     logger = get_run_logger()
     try:
@@ -62,7 +62,7 @@ def convert_html_to_markdown(html_content: str):
         logger.error(f"Failed to convert HTML to Markdown: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def write_file(content: str, output_path: str):
     logger = get_run_logger()
     try:
@@ -73,7 +73,7 @@ def write_file(content: str, output_path: str):
         logger.error(f"Failed to write content to {output_path}: {str(e)}")
         raise
 
-@task(max_retries=3, retry_delay_seconds=10)
+@task(retries=3, retry_delay_seconds=10)
 def call_api(file_name: str):
     logger = get_run_logger()
     try:
