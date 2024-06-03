@@ -9,7 +9,10 @@ tasks:
   - name: call_api
     params:
       file_name: pdf_path
+    depends_on: read_pdf  # Ensure this runs after read_pdf
+    parallel: true  # Run this task in parallel
   - name: write_json
     params:
       input: call_api
       output_path: api_response_output_path
+    depends_on: call_api  # Ensure this runs after call_api

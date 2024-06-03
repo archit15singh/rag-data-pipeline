@@ -9,6 +9,7 @@ tasks:
   - name: convert_html_to_markdown
     params:
       input: read_html
+      parallel: true  # Run this task in parallel
   - name: write_file
     params:
       input: convert_html_to_markdown

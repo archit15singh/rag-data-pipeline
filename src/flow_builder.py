@@ -1,6 +1,5 @@
-# src/flow_builder.py
 import yaml
-from prefect import flow
+from prefect import flow, get_run_logger
 from tasks import read_pdf, chunk_text, write_json, read_html, convert_html_to_markdown, write_file, call_api
 
 def create_flow_from_yaml(yaml_file):
@@ -9,27 +8,38 @@ def create_flow_from_yaml(yaml_file):
 
     @flow(name=config['flow_name'])
     def dynamic_flow(**kwargs):
-        tasks = {}
+        logger = get_run_logger()
+        tasks = {
+            'read_pdf': read_pdf,
+            'chunk_text': chunk_text,
+            'write_json': write_json,
+            'read_html': read_html,
+            'convert_html_to_markdown': convert_html_to_markdown,
+            'write_file': write_file,
+            'call_api': call_api,
+        }
+        results = {}
         for task_config in config['tasks']:
             task_name = task_config['name']
             task_params = {k: kwargs.get(v, v) for k, v in task_config['params'].items()}
-            
-            if task_name == 'read_pdf':
-                tasks[task_name] = read_pdf(**task_params)
-            elif task_name == 'chunk_text':
-                tasks[task_name] = chunk_text(tasks[task_params['input']], chunk_size=task_params.get('chunk_size', 100))
-            elif task_name == 'write_json':
-                tasks[task_name] = write_json(tasks[task_params['input']], output_path=task_params['output_path'])
-            elif task_name == 'read_html':
-                tasks[task_name] = read_html(**task_params)
-            elif task_name == 'convert_html_to_markdown':
-                tasks[task_name] = convert_html_to_markdown(tasks[task_params['input']])
-            elif task_name == 'write_file':
-                tasks[task_name] = write_file(tasks[task_params['input']], output_path=task_params['output_path'])
-            elif task_name == 'call_api':
-                tasks[task_name] = call_api(file_name=task_params['file_name'])
-            # Add more tasks as needed...
 
-        return tasks
+            if 'depends_on' in task_config:
+                depends_on = task_config['depends_on']
+                if isinstance(depends_on, list):
+                    dependencies = [results[dep] for dep in depends_on]
+                else:
+                    dependencies = [results[depends_on]]
+
+                if task_config.get('parallel', False):
+                    results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
+                else:
+                    results[task_name] = tasks[task_name](*dependencies, **task_params)
+            else:
+                if task_config.get('parallel', False):
+                    results[task_name] = tasks[task_name].submit(**task_params)
+                else:
+                    results[task_name] = tasks[task_name](**task_params)
+
+        return results
 
     return dynamic_flow
