@@ -21,8 +21,13 @@ def create_flow_from_yaml(yaml_file):
         results = {}
         for task_config in config['tasks']:
             task_name = task_config['name']
-            task_params = {k: kwargs.get(v, v) for k, v in task_config['params'].items()}
-
+            task_params = {}
+            for param_key, param_value in task_config['params'].items():
+                if param_value in results:
+                    task_params[param_key] = results[param_value]
+                else:
+                    task_params[param_key] = kwargs.get(param_value, param_value)
+            
             if 'depends_on' in task_config:
                 depends_on = task_config['depends_on']
                 if isinstance(depends_on, list):
