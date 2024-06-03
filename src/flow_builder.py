@@ -36,14 +36,30 @@ def create_flow_from_yaml(yaml_file):
                     dependencies = [results[depends_on]]
 
                 if task_config.get('parallel', False):
-                    results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
+                    try:
+                        results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
+                    except Exception as e:
+                        logger.error(f"Task {task_name} failed: {str(e)}")
+                        raise
                 else:
-                    results[task_name] = tasks[task_name](*dependencies, **task_params)
+                    try:
+                        results[task_name] = tasks[task_name](*dependencies, **task_params)
+                    except Exception as e:
+                        logger.error(f"Task {task_name} failed: {str(e)}")
+                        raise
             else:
                 if task_config.get('parallel', False):
-                    results[task_name] = tasks[task_name].submit(**task_params)
+                    try:
+                        results[task_name] = tasks[task_name].submit(**task_params)
+                    except Exception as e:
+                        logger.error(f"Task {task_name} failed: {str(e)}")
+                        raise
                 else:
-                    results[task_name] = tasks[task_name](**task_params)
+                    try:
+                        results[task_name] = tasks[task_name](**task_params)
+                    except Exception as e:
+                        logger.error(f"Task {task_name} failed: {str(e)}")
+                        raise
 
         return results
 
