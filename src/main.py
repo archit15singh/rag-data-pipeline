@@ -13,5 +13,15 @@ def main():
     flow3 = create_flow_from_yaml('flows/pipeline3.yaml')
     flow3(pdf_path='/workspaces/rag-data-pipeline/data/1.pdf', api_response_output_path='/workspaces/rag-data-pipeline/data/3_1.json')
 
+    # Example: Running Combined Pipeline
+    combined_flow = create_flow_from_yaml('flows/pipeline4.yaml')
+    combined_flow(
+        pdf_path='/workspaces/rag-data-pipeline/data/1.pdf',
+        html_path='/workspaces/rag-data-pipeline/data/1.html',
+        json_output_path='/workspaces/rag-data-pipeline/data/1.json',
+        markdown_output_path='/workspaces/rag-data-pipeline/data/1.md',
+        api_response_output_path='/workspaces/rag-data-pipeline/data/3_1.json'
+    )
+
 if __name__ == "__main__":
     main()

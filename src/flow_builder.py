@@ -1,6 +1,6 @@
 import yaml
 from prefect import flow, get_run_logger
-from tasks import read_pdf, chunk_text, write_json, read_html, convert_html_to_markdown, write_file, call_api
+from tasks import read_pdf, chunk_text, write_json, read_html, convert_html_to_markdown, write_file, call_api, write_api_response
 
 def create_flow_from_yaml(yaml_file):
     with open(yaml_file, 'r') as file:
@@ -17,6 +17,7 @@ def create_flow_from_yaml(yaml_file):
             'convert_html_to_markdown': convert_html_to_markdown,
             'write_file': write_file,
             'call_api': call_api,
+            'write_api_response': write_api_response,
         }
         results = {}
         for task_config in config['tasks']:
