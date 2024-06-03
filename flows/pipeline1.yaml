@@ -1,9 +1,7 @@
 flow_name: PDF to JSON Pipeline
 parameters:
   - name: pdf_path
-    default: /path/to/your/file.pdf
   - name: json_output_path
-    default: /path/to/output/file.json
 tasks:
   - name: read_pdf
     params:

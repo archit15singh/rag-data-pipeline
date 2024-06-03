@@ -1,9 +1,7 @@
 flow_name: HTML to Markdown Pipeline
 parameters:
   - name: html_path
-    default: /path/to/your/file.html
   - name: markdown_output_path
-    default: /path/to/output/file.md
 tasks:
   - name: read_html
     params:
