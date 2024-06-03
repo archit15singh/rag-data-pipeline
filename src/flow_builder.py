@@ -1,21 +1,18 @@
 # src/flow_builder.py
 import yaml
-from prefect import Flow, Parameter
+from prefect import flow
 from tasks import read_pdf, chunk_text, write_json, read_html, convert_html_to_markdown, write_file, call_api
 
 def create_flow_from_yaml(yaml_file):
     with open(yaml_file, 'r') as file:
         config = yaml.safe_load(file)
 
-    with Flow(config['flow_name']) as flow:
-        parameters = {}
+    @flow(name=config['flow_name'])
+    def dynamic_flow(**kwargs):
         tasks = {}
-        for param in config.get('parameters', []):
-            parameters[param['name']] = Parameter(param['name'], default=param.get('default'))
-
         for task_config in config['tasks']:
             task_name = task_config['name']
-            task_params = {k: parameters.get(v, v) for k, v in task_config['params'].items()}
+            task_params = {k: kwargs.get(v, v) for k, v in task_config['params'].items()}
             
             if task_name == 'read_pdf':
                 tasks[task_name] = read_pdf(**task_params)
@@ -33,4 +30,6 @@ def create_flow_from_yaml(yaml_file):
                 tasks[task_name] = call_api(file_name=task_params['file_name'])
             # Add more tasks as needed...
 
-    return flow
+        return tasks
+
+    return dynamic_flow
