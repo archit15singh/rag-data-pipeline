@@ -11,7 +11,7 @@ def read_pdf(file_path: str):
     logger = get_run_logger()
     try:
         text = textract.process(file_path).decode('utf-8')
-        logger.info(f"Read PDF from {file_path}")
+        logger.info(f"Read PDF from {file_path} (length: {len(text)} characters)")
         return text
     except Exception as e:
         logger.error(f"Failed to read PDF from {file_path}: {str(e)}")
@@ -45,7 +45,7 @@ def read_html(file_path: str):
     try:
         with open(file_path, 'r') as file:
             html_content = file.read()
-        logger.info(f"Read HTML from {file_path}")
+        logger.info(f"Read HTML from {file_path} (length: {len(html_content)} characters)")
         return html_content
     except Exception as e:
         logger.error(f"Failed to read HTML from {file_path}: {str(e)}")
@@ -56,7 +56,7 @@ def convert_html_to_markdown(html_content: str):
     logger = get_run_logger()
     try:
         markdown_content = md(html_content)
-        logger.info(f"Converted HTML to Markdown")
+        logger.info(f"Converted HTML to Markdown (length: {len(markdown_content)} characters)")
         return markdown_content
     except Exception as e:
         logger.error(f"Failed to convert HTML to Markdown: {str(e)}")
@@ -79,7 +79,7 @@ def call_api(file_name: str):
     try:
         # Simulating an API call
         response = {"file_name": file_name, "status": "processed"}
-        logger.info(f"Called API with {file_name}")
+        logger.info(f"Called API with {file_name} (response: {response})")
         return response
     except Exception as e:
         logger.error(f"Failed to call API with {file_name}: {str(e)}")

@@ -28,6 +28,8 @@ def create_flow_from_yaml(yaml_file):
                 else:
                     task_params[param_key] = kwargs.get(param_value, param_value)
 
+            logger.info(f"Running task: {task_name} with params: {task_params}")
+
             if 'depends_on' in task_config:
                 depends_on = task_config['depends_on']
                 if isinstance(depends_on, list):
