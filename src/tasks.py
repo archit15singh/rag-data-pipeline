@@ -14,7 +14,7 @@ def read_pdf(file_path: str):
         logger.info(f"Read PDF from {file_path} (length: {len(text)} characters)")
         return text
     except Exception as e:
-        logger.error(f"Failed to read PDF from {file_path}: {str(e)}")
+        logger.error(f"Failed to read PDF from {file_path}")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -25,7 +25,7 @@ def chunk_text(text: str, chunk_size: int = 100):
         logger.info(f"Chunked text into {len(chunks)} chunks")
         return chunks
     except Exception as e:
-        logger.error(f"Failed to chunk text: {str(e)}")
+        logger.error(f"Failed to chunk text")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -36,7 +36,7 @@ def write_json(data, output_path: str):
             json.dump(data, f)
         logger.info(f"Wrote JSON to {output_path}")
     except Exception as e:
-        logger.error(f"Failed to write JSON to {output_path}: {str(e)}")
+        logger.error(f"Failed to write JSON to {output_path}")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -48,7 +48,7 @@ def read_html(file_path: str):
         logger.info(f"Read HTML from {file_path} (length: {len(html_content)} characters)")
         return html_content
     except Exception as e:
-        logger.error(f"Failed to read HTML from {file_path}: {str(e)}")
+        logger.error(f"Failed to read HTML from {file_path}")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -59,7 +59,7 @@ def convert_html_to_markdown(html_content: str):
         logger.info(f"Converted HTML to Markdown (length: {len(markdown_content)} characters)")
         return markdown_content
     except Exception as e:
-        logger.error(f"Failed to convert HTML to Markdown: {str(e)}")
+        logger.error(f"Failed to convert HTML to Markdown")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -70,7 +70,7 @@ def write_file(content: str, output_path: str):
             f.write(content)
         logger.info(f"Wrote content to {output_path}")
     except Exception as e:
-        logger.error(f"Failed to write content to {output_path}: {str(e)}")
+        logger.error(f"Failed to write content to {output_path}")
         raise
 
 @task(retries=3, retry_delay_seconds=10)
@@ -82,5 +82,5 @@ def call_api(file_name: str):
         logger.info(f"Called API with {file_name} (response: {response})")
         return response
     except Exception as e:
-        logger.error(f"Failed to call API with {file_name}: {str(e)}")
+        logger.error(f"Failed to call API with {file_name}")
         raise

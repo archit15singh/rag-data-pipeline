@@ -22,13 +22,13 @@ def create_flow_from_yaml(yaml_file):
         for task_config in config['tasks']:
             task_name = task_config['name']
             task_params = {}
+            dependencies = []
+            
             for param_key, param_value in task_config['params'].items():
                 if param_value in results:
                     task_params[param_key] = results[param_value]
                 else:
                     task_params[param_key] = kwargs.get(param_value, param_value)
-
-            logger.info(f"Running task: {task_name} with params: {task_params}")
 
             if 'depends_on' in task_config:
                 depends_on = task_config['depends_on']
@@ -37,31 +37,20 @@ def create_flow_from_yaml(yaml_file):
                 else:
                     dependencies = [results[depends_on]]
 
-                if task_config.get('parallel', False):
-                    try:
-                        results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
-                    except Exception as e:
-                        logger.error(f"Task {task_name} failed: {str(e)}")
-                        raise
-                else:
-                    try:
-                        results[task_name] = tasks[task_name](*dependencies, **task_params)
-                    except Exception as e:
-                        logger.error(f"Task {task_name} failed: {str(e)}")
-                        raise
+            logger.info(f"Running task: {task_name} with params: {task_params} and dependencies: {dependencies}")
+
+            if task_config.get('parallel', False):
+                try:
+                    results[task_name] = tasks[task_name].submit(*dependencies, **task_params)
+                except Exception as e:
+                    logger.error(f"Task {task_name} failed")
+                    raise
             else:
-                if task_config.get('parallel', False):
-                    try:
-                        results[task_name] = tasks[task_name].submit(**task_params)
-                    except Exception as e:
-                        logger.error(f"Task {task_name} failed: {str(e)}")
-                        raise
-                else:
-                    try:
-                        results[task_name] = tasks[task_name](**task_params)
-                    except Exception as e:
-                        logger.error(f"Task {task_name} failed: {str(e)}")
-                        raise
+                try:
+                    results[task_name] = tasks[task_name](*dependencies, **task_params)
+                except Exception as e:
+                    logger.error(f"Task {task_name} failed")
+                    raise
 
         return results
 
