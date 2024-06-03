@@ -7,6 +7,32 @@ import requests
 from markdownify import markdownify as md
 
 @task(retries=3, retry_delay_seconds=10)
+def read_pdf(file_path: str) -> str:
+    text = textract.process(file_path, method='pdfminer').decode('utf-8')
+    print(f"Read PDF from {file_path} (length: {len(text)} characters)")
+    return text
+
+@task(retries=3, retry_delay_seconds=10)
+def read_docx(file_path: str) -> str:
+    text = textract.process(file_path, method='docx').decode('utf-8')
+    print(f"Read DOCX from {file_path} (length: {len(text)} characters)")
+    return text
+
+@task(retries=3, retry_delay_seconds=10)
+def read_html(file_path: str) -> str:
+    text = textract.process(file_path, method='html').decode('utf-8')
+    print(f"Read HTML from {file_path} (length: {len(text)} characters)")
+    return text
+
+@task(retries=3, retry_delay_seconds=10)
+def read_txt(file_path: str) -> str:
+    text = textract.process(file_path, method='text').decode('utf-8')
+    print(f"Read TXT from {file_path} (length: {len(text)} characters)")
+    return text
+
+# Add similar functions for other file types supported by textract
+
+@task(retries=3, retry_delay_seconds=10)
 def read_pdf(file_path: str):
     logger = get_run_logger()
     try:
