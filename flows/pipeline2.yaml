@@ -1,0 +1,17 @@
+flow_name: HTML to Markdown Pipeline
+parameters:
+  - name: html_path
+    default: /path/to/your/file.html
+  - name: markdown_output_path
+    default: /path/to/output/file.md
+tasks:
+  - name: read_html
+    params:
+      file_path: html_path
+  - name: convert_html_to_markdown
+    params:
+      input: read_html
+  - name: write_file
+    params:
+      input: convert_html_to_markdown
+      output_path: markdown_output_path
