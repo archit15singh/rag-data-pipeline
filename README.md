@@ -47,15 +47,10 @@ The YAML configuration files define the flow of tasks and their dependencies. Be
 flow_name: Pipeline
 parameters:
   - name: pdf_path
-    default: /path/to/your/file.pdf
   - name: html_path
-    default: /path/to/your/file.html
   - name: json_output_path
-    default: /path/to/output/file.json
   - name: markdown_output_path
-    default: /path/to/output/file.md
   - name: api_response_output_path
-    default: /path/to/output/response.json
 tasks:
   - name: read_pdf
     params:
