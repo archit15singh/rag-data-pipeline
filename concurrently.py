@@ -8,15 +8,14 @@ from loguru import logger
 import hashlib
 
 @task
-async def read_pdf(file_path: str):
+async def read_pdf(file_path: str) -> str:
     logger.info(f"Reading PDF: {file_path}")
     text = textract.process(file_path).decode('utf-8')
     return text
 
 @task
-async def chunk_text(text: str, chunk_size: int = 1000):
-    for i in range(0, len(text), chunk_size):
-        yield text[i:i + chunk_size]
+async def chunk_text(text: str, chunk_size: int = 1000) -> list:
+    return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
 
 @task
 async def write_chunk(folder: str, filename: str, chunk: str, chunk_index: int):
@@ -27,11 +26,12 @@ async def write_chunk(folder: str, filename: str, chunk: str, chunk_index: int):
 
 @flow(task_runner=ConcurrentTaskRunner())
 async def process_pdf(file_path: str, output_folder: str):
-    text = await read_pdf.submit(file_path).result()
+    text = await read_pdf(file_path)
+    chunks = await chunk_text(text)
     filename = hashlib.md5(file_path.encode()).hexdigest()
     tasks = []
-    for i, chunk in enumerate(chunk_text(text)):
-        tasks.append(write_chunk.submit(output_folder, filename, chunk, i))
+    for i, chunk in enumerate(chunks):
+        tasks.append(write_chunk(output_folder, filename, chunk, i))
     await asyncio.gather(*tasks)
 
 @flow(name="PDF Processing Flow", task_runner=ConcurrentTaskRunner())
