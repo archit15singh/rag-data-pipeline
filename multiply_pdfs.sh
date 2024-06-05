@@ -16,11 +16,11 @@ if [ ! -d "$DIR" ]; then
 fi
 
 # Iterate over the 4 PDF files
-for i in {1..4}; do
-  for j in {1..250}; do
+for i in {1..1}; do
+  for j in {1..1000}; do
     cp "$DIR/$i.pdf" "$DIR/${i}_${j}.pdf"
     echo "Created copy $j of $i.pdf"
   done
 done
 
-echo "250 copies of each PDF created successfully."
+echo "1000 copies of each PDF created successfully."
