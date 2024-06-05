@@ -135,3 +135,7 @@ def read_pdf(file_path: str):
     # Task implementation
 ```
 
+## Access the UI
+```bash
+prefect server start
+```
