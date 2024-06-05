@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 4200
 
 # Command to start the Prefect Orion server
-CMD ["prefect", "orion", "start", "--host", "0.0.0.0"]
+CMD ["prefect", "server", "start", "--host", "0.0.0.0"]

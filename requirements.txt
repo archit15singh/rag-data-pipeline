@@ -1,4 +1,4 @@
-prefect
+prefect>=2.0.0
 aiofiles
 textract
 loguru
