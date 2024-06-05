@@ -1,4 +1,4 @@
 prefect
-PyYAML
-markdownify
+aiofiles
 textract
+loguru

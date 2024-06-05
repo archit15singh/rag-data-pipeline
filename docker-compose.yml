@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  pdf_processor:
+    build: .
+    volumes:
+      - ./data:/data
+    environment:
+      - PREFECT_API_URL=http://prefect-server:4200
+    depends_on:
+      - prefect-server
+
+  prefect-server:
+    image: prefecthq/prefect:2.0.0
+    environment:
+      - PREFECT_ORION_DATABASE_CONNECTION_URL=sqlite:///root/.prefect/orion.db
+    ports:
+      - "4200:4200"
+    command: prefect orion start
