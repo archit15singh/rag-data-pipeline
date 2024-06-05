@@ -6,7 +6,7 @@ from loguru import logger
 import hashlib
 import datetime
 
-@task(retries=3, retry_delay=datetime.timedelta(seconds=10), timeout_seconds=300)
+@task(name="Read PDF", description="Reads the content of a PDF file and returns it as text.", retries=3, retry_delay_seconds=10, timeout_seconds=300)
 def read_pdf(file_path: str) -> str:
     try:
         logger.info(f"Reading PDF: {file_path}")
@@ -16,15 +16,16 @@ def read_pdf(file_path: str) -> str:
         logger.error(f"Failed to read PDF {file_path}: {e}")
         raise
 
-@task(retries=3, retry_delay=datetime.timedelta(seconds=5), timeout_seconds=120)
-def chunk_text(text: str, chunk_size: int = 1000) -> list:
+@task(name="Chunk Text", description="Chunks the given text into smaller segments of a specified size.", retries=3, retry_delay_seconds=5, timeout_seconds=120)
+def chunk_text_generator(text: str, chunk_size: int = 1000):
     try:
-        return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+        for i in range(0, len(text), chunk_size):
+            yield text[i:i + chunk_size]
     except Exception as e:
         logger.error(f"Failed to chunk text: {e}")
         raise
 
-@task(retries=3, retry_delay=datetime.timedelta(seconds=5), timeout_seconds=60)
+@task(name="Write Chunk", description="Writes a chunk of text to a file.", retries=3, retry_delay_seconds=5, timeout_seconds=60)
 def write_chunk(folder: str, filename: str, chunk: str, chunk_index: int):
     try:
         chunk_path = os.path.join(folder, f"{filename}_chunk_{chunk_index}.txt")
@@ -39,10 +40,11 @@ def write_chunk(folder: str, filename: str, chunk: str, chunk_index: int):
 def process_pdf(file_path: str, output_folder: str):
     try:
         text = read_pdf(file_path)
-        chunks = chunk_text(text)
         filename = hashlib.md5(file_path.encode()).hexdigest()
-        for i, chunk in enumerate(chunks):
-            write_chunk(output_folder, filename, chunk, i)
+        chunk_index = 0
+        for chunk in chunk_text_generator(text):
+            write_chunk(output_folder, filename, chunk, chunk_index)
+            chunk_index += 1
     except Exception as e:
         logger.error(f"Failed to process PDF {file_path}: {e}")
         raise
